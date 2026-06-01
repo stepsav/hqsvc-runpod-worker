@@ -19,7 +19,7 @@ WORKDIR /app/HQ-SVC
 # Распаковываем conda-pack окружение и чиним пути (conda-unpack), затем удаляем архив
 RUN mkdir -p /opt/hqenv \
     && tar -xzf environment.tar.gz -C /opt/hqenv \
-    && /opt/hqenv/bin/conda-unpack \
+    && /opt/hqenv/bin/python /opt/hqenv/bin/conda-unpack \
     && rm -f environment.tar.gz
 
 # RunPod SDK ставим ВНУТРЬ их окружения
