@@ -15,6 +15,9 @@ WORKDIR /app
 RUN python -c "from huggingface_hub import snapshot_download as d; d('shawnpi/HQ-SVC', local_dir='/app/HQ-SVC', ignore_patterns=['environment.tar.gz'])"
 
 WORKDIR /app/HQ-SVC
+# В requirements.txt есть dev-пины (напр. diffusers==0.28.0.dev0), которых нет на PyPI.
+# Срезаем суффикс .devN → ставим ближайшую стабильную версию.
+RUN sed -i -E 's/==([0-9]+(\.[0-9]+)+)\.dev[0-9]*/==\1/' requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
 RUN python -c "import runpod; print('RUNPOD OK', runpod.__version__)"
