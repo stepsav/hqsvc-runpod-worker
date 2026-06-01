@@ -18,6 +18,10 @@ WORKDIR /app/HQ-SVC
 # requirements.txt — слепок conda-env с git/local-версиями (напр. lhotse==1.24.0+git...,
 # diffusers==0.28.0.dev0), которых нет на PyPI. Срезаем +локальные и .dev суффиксы → стабильные версии.
 RUN sed -i -E 's/\+[A-Za-z0-9._]+//g; s/\.dev[0-9]*//g' requirements.txt
+# Старые пакеты (openai-whisper) собираются через setup.py с pkg_resources → нужен setuptools<81.
+RUN pip install --no-cache-dir "setuptools<81" wheel
+RUN printf 'setuptools<81\n' > /tmp/pip-constraints.txt
+ENV PIP_CONSTRAINT=/tmp/pip-constraints.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
 RUN python -c "import runpod; print('RUNPOD OK', runpod.__version__)"
